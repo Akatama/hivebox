@@ -10,9 +10,17 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version-file: '.python-version'
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b
       - name: Lint Python code
-        uses: astral-sh/ruff-action@v3
+        uses: astral-sh/ruff-action@v4
         with:
           src: "./app"
       - name: Lint Dockerfile
         uses: hadolint/hadolint-action@v3.3.0
+      - name: Build Dockerfile
+        run: docker build -t hivebox:v0.0.1 .
+      - name: Run Fast API server
+        run: docker run -p 8000:8000 -p 8080:80 -p 8443:443 hivebox:v0.0.1
+      - name: Verify version is correct
+        run: diff <(curl --silent localhost:8000/version | jq -r '.version') <(uv version --short)
