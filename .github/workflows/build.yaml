@@ -22,5 +22,7 @@ jobs:
         run: docker build -t hivebox:v0.0.1 .
       - name: Run Fast API server
         run: docker run -p 8000:8000 -p 8080:80 -p 8443:443 -d hivebox:v0.0.1
+      - name: Test Dockerfile
+        run: curl --silent localhost:8000/version
       - name: Verify version is correct
         run: diff <(curl --silent localhost:8000/version | jq -r '.version') <(uv version --short)
