@@ -10,7 +10,7 @@ jobs:
       - name: Install the latest version of uv
         uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b
       - name: Install python
-        run: uv install python
+        run: uv python install
       - name: Lint Python code
         uses: astral-sh/ruff-action@v3
         with:
