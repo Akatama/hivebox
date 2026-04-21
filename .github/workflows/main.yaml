@@ -1,27 +1,28 @@
 name: Lint-Build-Test
-on: push
+on:
+  [push, pull_request]
 
 jobs:
   lint-build-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - name: Set up Python 3.14
-        uses: actions/setup-python@v6
-        with:
-          python-version-file: '.python-version'
       - name: Install the latest version of uv
         uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b
+      - name: Install python
+        run: uv install python
       - name: Lint Python code
         uses: astral-sh/ruff-action@v3
         with:
           src: "./app"
       - name: Lint Dockerfile
         uses: hadolint/hadolint-action@v3.3.0
+        with:
+          dockerfile: ./Dockerfile
+          no-fail: false
+      - name: Install dependencies
+        run: uv sync
+      - name: Run tests
+        run: uv run pytest
       - name: Build Dockerfile
         run: docker build -t hivebox:v0.0.1 .
-      - name: Run Docker container and verify the version endpoint is correct
-        run: |
-          docker run -p 8000:8000 -p 8080:80 -p 8443:443 -d hivebox:v0.0.1
-          curl --silent localhost:8000/version
-          diff <(curl --silent localhost:8000/version | jq -r '.version') <(uv version --short)
