@@ -1,12 +1,13 @@
+import os
 from datetime import datetime, timezone, timedelta
 from .exceptions import OpenSenseMapAPIError
 import requests
 
-SENSEBOX_IDS = [
-    "5eba5fbad46fb8001b799786",
-    "5c21ff8f919bf8001adf2488",
-    "5ade1acf223bd80019a1011c",
-]
+DEFAULT_SENSEBOX_IDS = (
+    "5eba5fbad46fb8001b799786,5c21ff8f919bf8001adf2488,5ade1acf223bd80019a1011c"
+)
+
+SENSEBOX_IDS = os.getenv("SENSEBOX_IDS", DEFAULT_SENSEBOX_IDS).split(",")
 
 API_URL = "https://api.opensensemap.org/boxes/"
 

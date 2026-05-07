@@ -27,6 +27,14 @@ async def get_temperature():
         )
 
     average_temp = round(sum(temps) / len(temps), 2)
-    return {
-        "temperature": average_temp,
-    }
+    status = "Too Hot"
+    if average_temp < 10.0:
+        status = "Too Cold"
+    elif 10.0 <= average_temp <= 36.0:
+        status = "Good"
+    return {"temperature": average_temp, "status": status}
+
+
+@app.get("/metrics")
+async def get_metrics():
+    return {"Message": "Need to set up Prometheus"}
